@@ -22,7 +22,7 @@ MapleMap.load = async function(id) {
 
   let filename = 'UI.wz/MapLogin.img';
   if (id !== 'MapLogin') {
-    const prefix = Math.floor(id/100000000);
+    const prefix = Math.floor(id / 100000000);
     const strId = `${id}`.padStart(9, '0');
     filename = `Map.wz/Map/Map${prefix}/${strId}.img`;
   }
@@ -36,7 +36,7 @@ MapleMap.load = async function(id) {
   this.footholds = this.loadFootholds(this.wzNode.foothold);
   this.boundaries = this.loadBoundaries(this.wzNode, this.footholds);
   Camera.setBoundaries(this.boundaries); //debugging
-  Camera.lookAt(this.boundaries.left, this.boundaries.top);//debugging
+  Camera.lookAt(this.boundaries.left, this.boundaries.top); //debugging
   this.backgrounds = await this.loadBackgrounds(this.wzNode.back);
   this.tiles = await this.loadTiles(this.wzNode);
   this.objects = await this.loadObjects(this.wzNode);
@@ -88,7 +88,7 @@ MapleMap.loadBackgrounds = async function(wzNode) {
     backgrounds.push(bg);
   }
 
-  backgrounds.sort((a, b) => a.z-b.z);
+  backgrounds.sort((a, b) => a.z - b.z);
 
   return backgrounds;
 };
@@ -107,9 +107,9 @@ MapleMap.loadPortals = async function(wzNode) {
 MapleMap.loadNames = async function(id) {
   const strMap = await WZManager.get('String.wz/Map.img');
 
-  const firstDigit = Math.floor(id/100000000);
-  const firstTwoDigits = Math.floor(id/10000000);
-  const firstThreeDigits = Math.floor(id/1000000);
+  const firstDigit = Math.floor(id / 100000000);
+  const firstTwoDigits = Math.floor(id / 10000000);
+  const firstThreeDigits = Math.floor(id / 1000000);
 
   let area = 'maple';
   if (firstTwoDigits === 54) {
@@ -136,7 +136,7 @@ MapleMap.loadNames = async function(id) {
 
   return {
     streetName,
-    mapName,
+    mapName
   };
 };
 
@@ -151,7 +151,7 @@ MapleMap.loadTiles = async function(wzNode) {
     }
   }
 
-  tiles.sort((a, b) => a.z-b.z);
+  tiles.sort((a, b) => a.z - b.z);
 
   return tiles;
 };
@@ -167,22 +167,30 @@ MapleMap.loadObjects = async function(wzNode) {
     }
   }
 
-  objects.sort((a, b) => a.z === b.z ? a.zid-b.zid : a.z-b.z);
+  objects.sort((a, b) => (a.z === b.z ? a.zid - b.zid : a.z - b.z));
 
   return objects;
 };
 
-MapleMap.spawnMonster = async function(opts={}) {
+let footholds = [];
+async function initializeMonster(opts) {
   const mob = await Monster.fromOpts(opts);
-  const whichFoothold = this.footholds[mob.fh];
+  // console.log('spawning monster', opts, mob, footholds);
+  const whichFoothold = footholds[mob.fh];
   if (!!whichFoothold) {
     mob.layer = whichFoothold.layer;
   }
+  return mob;
+}
 
+MapleMap.spawnMonster = async function(opts = {}) {
+  mob = await initializeMonster(opts);
   this.monsters.push(mob);
 };
 
+let currentMonsters = [];
 MapleMap.loadMonsters = async function(wzNode) {
+  footholds = this.footholds;
   for (const mobNode of wzNode.nChildren.filter(n => n.type.nValue === 'm')) {
     await this.spawnMonster({
       oId: null,
@@ -190,12 +198,13 @@ MapleMap.loadMonsters = async function(wzNode) {
       x: mobNode.x.nValue,
       y: mobNode.y.nValue,
       stance: '',
-      fh: mobNode.fh.nValue,
+      fh: mobNode.fh.nValue
     });
   }
+  currentMonsters = this.monsters;
 };
 
-MapleMap.spawnNPC = async function(opts={}) {
+MapleMap.spawnNPC = async function(opts = {}) {
   const npc = await NPC.fromOpts(opts);
   const whichFoothold = this.footholds[npc.fh];
   if (!!whichFoothold) {
@@ -215,7 +224,7 @@ MapleMap.loadNPCs = async function(wzNode) {
       f: npcNode.nGet('f').nGet('nValue', 0),
       fh: npcNode.fh.nValue,
       rx0: npcNode.rx0.nValue,
-      rx1: npcNode.rx1.nValue,
+      rx1: npcNode.rx1.nValue
     });
   }
 };
@@ -226,7 +235,7 @@ MapleMap.loadBoundaries = function(wzNode, footholds) {
       left: wzNode.info.VRLeft.nValue,
       right: wzNode.info.VRRight.nValue,
       top: wzNode.info.VRTop.nValue,
-      bottom: wzNode.info.VRBottom.nValue,
+      bottom: wzNode.info.VRBottom.nValue
     };
   }
 
@@ -244,7 +253,7 @@ MapleMap.loadBoundaries = function(wzNode, footholds) {
     left: Math.min(...xValues) + 10,
     right: Math.max(...xValues) - 10,
     top: Math.min(...yValues) - 360,
-    bottom: Math.max(...yValues) + 110,
+    bottom: Math.max(...yValues) + 110
   };
 };
 
@@ -254,12 +263,14 @@ MapleMap.update = function(msPerTick) {
   }
 
   // handle destroyed objects
-  this.monsters = this.monsters.filter(m => !m.destroyed);
+  // this.monsters = this.monsters.filter(m => !m.destroyed);
+  currentMonsters = currentMonsters.filter(m => !m.destroyed);
 
   this.backgrounds.forEach(bg => bg.update(msPerTick));
   this.objects.forEach(obj => obj.update(msPerTick));
   this.npcs.forEach(npc => npc.update(msPerTick));
-  this.monsters.forEach(mob => mob.update(msPerTick));
+  // this.monsters.forEach(mob => mob.update(msPerTick));
+  currentMonsters.forEach(mob => mob.update(msPerTick));
   this.characters.forEach(chr => chr.update(msPerTick));
   this.portals.forEach(p => p.update(msPerTick));
 
@@ -270,6 +281,7 @@ MapleMap.render = function(camera, lag, msPerTick, tdelta) {
   if (!this.doneLoading) {
     return;
   }
+  // alert('maplemap render');
 
   const draw = obj => obj.draw(camera, lag, msPerTick, tdelta);
 
@@ -279,14 +291,16 @@ MapleMap.render = function(camera, lag, msPerTick, tdelta) {
     const inCurrentLayer = obj => obj.layer === i;
     this.objects.filter(inCurrentLayer).forEach(draw);
     this.tiles.filter(inCurrentLayer).forEach(draw);
-    this.monsters.filter(inCurrentLayer).forEach(draw);
+    // this.monsters.filter(inCurrentLayer).forEach(draw);
+    currentMonsters.filter(inCurrentLayer).forEach(draw);
     this.characters.filter(inCurrentLayer).forEach(draw);
     this.npcs.filter(inCurrentLayer).forEach(draw);
   }
   // how about obj.layer = null?
   const notInAnyLayer = obj => !(obj.layer >= 0 && obj.layer <= 7);
 
-  this.monsters.filter(notInAnyLayer).forEach(draw);
+  // this.monsters.filter(notInAnyLayer).forEach(draw);
+  currentMonsters.filter(notInAnyLayer).forEach(draw);
   this.characters.filter(notInAnyLayer).forEach(draw);
   this.npcs.filter(notInAnyLayer).forEach(draw);
 
@@ -305,7 +319,7 @@ MapleMap.render = function(camera, lag, msPerTick, tdelta) {
     DRAW_IMAGE({
       img: levelUpFrame.nGetImage(),
       dx: c.x - levelUpFrame.origin.nX - camera.x,
-      dy: c.y - levelUpFrame.origin.nY - camera.y,
+      dy: c.y - levelUpFrame.origin.nY - camera.y
     });
   };
   this.characters.filter(c => !!c.levelingUp).forEach(drawLevelUp);

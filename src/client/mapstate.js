@@ -52,8 +52,21 @@ MapState.doUpdate = function(msPerTick) {
   }
 };
 
+// let saveCamera, saveLag, saveMsPerTick, saveTdelta;
+// function renderMapleMap(compileBypass) {
+//   if (!compileBypass) {
+//     MapleMap.render(saveCamera, saveLag, saveMsPerTick, saveTdelta);
+//   }
+// }
+// renderMapleMap(true);
+
 MapState.doRender = function(camera, lag, msPerTick, tdelta) {
   if (!!MapleMap.doneLoading) {
+    saveCamera = camera;
+    saveLag = lag;
+    saveMsPerTick = msPerTick;
+    saveTdelta = tdelta;
+
     MapleMap.render(camera, lag, msPerTick, tdelta);
     UIMap.doRender(camera, lag, msPerTick, tdelta);
   }

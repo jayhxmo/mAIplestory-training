@@ -30,6 +30,8 @@ UICommon.playMouseHoverAudio = function() {
 
 UICommon.doUpdate = function(msPerTick) {};
 
+let canvasOffset = document.getElementById('game').getBoundingClientRect();
+
 UICommon.doRender = function(camera, lag, msPerTick, tdelta) {
   const clicked = GameCanvas.clicked;
   const cursorImg = !clicked ? this.cursorImg : this.cursorDownImg;
@@ -39,8 +41,8 @@ UICommon.doRender = function(camera, lag, msPerTick, tdelta) {
   cursorImg.style.zIndex = 4;
   cursorImg.style.pointerEvents = 'none';
 
-  cursorImg.style.left = `${GameCanvas.mouseX - cursorOrigin.nX}px`;
-  cursorImg.style.top = `${GameCanvas.mouseY - cursorOrigin.nY}px`;
+  cursorImg.style.left = `${GameCanvas.mouseX - cursorOrigin.nX + canvasOffset.x}px`;
+  cursorImg.style.top = `${GameCanvas.mouseY - cursorOrigin.nY + canvasOffset.y}px`;
 
   !!this.currentCursor && this.currentCursor.remove();
   this.currentCursor = cursorImg;

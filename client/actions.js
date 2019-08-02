@@ -1,5 +1,5 @@
 function onMouseDown(key) {
-	console.log('DOWN', key);
+	// console.log('DOWN', key);
 	if (document.getElementById('button-' + key)) {
 		if (!document.getElementById('button-' + key).classList.contains('button--pressed')) {
 			document.getElementById('button-' + key).className += ' button--pressed';
@@ -8,7 +8,7 @@ function onMouseDown(key) {
 }
 
 function onMouseUp(key) {
-	console.log(key);
+	// console.log(key);
 	if (document.getElementById('button-' + key)) {
 		if (document.getElementById('button-' + key).classList.contains('button--pressed')) {
 			document.getElementById('button-' + key).className = document
@@ -28,8 +28,8 @@ function onMouseUp(key) {
 					takeScreenshot();
 					break;
 
-				case 's':
-					takeScreenshot();
+				case 'q':
+					randomizeMonsters();
 					break;
 			}
 		}
@@ -113,6 +113,7 @@ addMapData(maps);
 
 function fillMapInput(map) {
 	//console.log('map value', map);
+	mapIndex = maps.indexOf(map);
 	document.getElementById('actions__map__dropdown__input').value = map;
 	loadMap(parseInt(map));
 }
@@ -143,4 +144,35 @@ function changeMap(factor) {
 
 function loadMap(map) {
 	initializeMapState(map);
+}
+
+////////////////////////////////////////////////////////////////////
+
+function randomizeMonsters() {
+	let options = [];
+	console.log('currentMonsters', currentMonsters);
+	for (let i = 0; i < currentMonsters.length; i++) {
+		let factorX = Math.random() * 200 - 100;
+		let factorY = Math.random() * 80 - 40;
+
+		currentMonsters[i].opts.x += factorX;
+		currentMonsters[i].opts.y += factorY;
+
+		currentMonsters[i].updatePosition(currentMonsters[i].opts.x, currentMonsters[i].opts.y);
+		// currentMonsters.forEach(mob => mob.update(msPerTick));
+
+		// options.push(currentMonsters[i].opts);
+		// initializeMonster
+
+		// currentMonsters[i]
+		// currentMonsters[i].destroy();
+		// currentMonsters[i] = initializeMonster(currentMonsters[i].opts);
+	}
+
+	// for (let i = 0; i < options.length; i++) {
+	// 	currentMonsters.push(initializeMonster(options[i]));
+	// }
+	// currentMonsters = [];
+	// renderMapleMap(false);
+	console.log(currentMonsters);
 }

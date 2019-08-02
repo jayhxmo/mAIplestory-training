@@ -43,16 +43,18 @@ class Monster {
     }, {});
 
     this.stances = {};
-    mobFile.nChildren.filter(c => c.nName !== 'info').forEach(stance => {
-      this.stances[stance.nName] = this.loadStance(mobFile, stance.nName);
-    });
+    mobFile.nChildren
+      .filter(c => c.nName !== 'info')
+      .forEach(stance => {
+        this.stances[stance.nName] = this.loadStance(mobFile, stance.nName);
+      });
 
     this.setFrame(!this.stances.fly ? 'stand' : 'fly', 0);
   }
-  loadStance(wzNode={}, stance='stand') {
+  loadStance(wzNode = {}, stance = 'stand') {
     if (!wzNode[stance]) {
       return {
-        frames: [],
+        frames: []
       };
     }
 
@@ -68,8 +70,12 @@ class Monster {
     });
 
     return {
-      frames,
+      frames
     };
+  }
+  updatePosition(x, y) {
+    this.x = x;
+    this.y = y;
   }
   playAudio(name) {
     if (!!this.sounds[name]) {
@@ -84,7 +90,7 @@ class Monster {
   destroy() {
     this.destroyed = true;
   }
-  setFrame(stance, frame=0, carryOverDelay=0) {
+  setFrame(stance, frame = 0, carryOverDelay = 0) {
     if (!this.stances[stance]) {
       return;
     }
@@ -101,12 +107,12 @@ class Monster {
     this.delay += msPerTick;
 
     if (this.delay > this.nextDelay) {
-      const hasNextFrame = !!this.stances[this.stance].frames[this.frame+1];
+      const hasNextFrame = !!this.stances[this.stance].frames[this.frame + 1];
       if (!!this.dying && !hasNextFrame) {
         this.destroy();
         return;
       }
-      this.setFrame(this.stance, this.frame+1, this.delay-this.nextDelay);
+      this.setFrame(this.stance, this.frame + 1, this.delay - this.nextDelay);
     }
   }
   draw(camera, lag, msPerTick, tdelta) {
@@ -116,16 +122,15 @@ class Monster {
     const originX = currentFrame.nGet('origin').nGet('nX', 0);
     const originY = currentFrame.nGet('origin').nGet('nY', 0);
 
-    const adjustX = !this.flipped ? originX : (currentFrame.nWidth-originX);
+    const adjustX = !this.flipped ? originX : currentFrame.nWidth - originX;
 
     DRAW_IMAGE({
       img: currentImage,
-      dx: this.x-camera.x-adjustX,
-      dy: this.y-camera.y-originY,
-      flipped: !!this.flipped,
+      dx: this.x - camera.x - adjustX,
+      dy: this.y - camera.y - originY,
+      flipped: !!this.flipped
     });
   }
 }
 
 export default Monster;
-
