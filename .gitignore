@@ -5,3 +5,6 @@
 
 # WebStorm
 /.idea/
+
+# macOS
+.DS_Store

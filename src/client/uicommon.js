@@ -14,7 +14,6 @@ UICommon.initialize = async function() {
   this.cursorDownImg = cursor[12][0].nGetImage();
   this.cursorDownOrigin = cursor[12][0].origin;
 
-
   const sounds = await WZManager.get('Sound.wz/UI.img');
 
   this.clickAudio = sounds.BtMouseClick.nGetAudio();
@@ -29,8 +28,7 @@ UICommon.playMouseHoverAudio = function() {
   PLAY_AUDIO(this.hoverAudio);
 };
 
-UICommon.doUpdate = function(msPerTick) {
-};
+UICommon.doUpdate = function(msPerTick) {};
 
 UICommon.doRender = function(camera, lag, msPerTick, tdelta) {
   const clicked = GameCanvas.clicked;
@@ -40,6 +38,7 @@ UICommon.doRender = function(camera, lag, msPerTick, tdelta) {
   cursorImg.style.position = 'absolute';
   cursorImg.style.zIndex = 4;
   cursorImg.style.pointerEvents = 'none';
+
   cursorImg.style.left = `${GameCanvas.mouseX - cursorOrigin.nX}px`;
   cursorImg.style.top = `${GameCanvas.mouseY - cursorOrigin.nY}px`;
 
