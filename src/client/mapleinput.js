@@ -20,17 +20,20 @@ class MapleInput {
     this.opts = opts;
     this.input = input;
     this.focusListeners = [
-      () => { GameCanvas.focusInput = true; },
-      ...focusListeners,
+      () => {
+        GameCanvas.focusInput = true;
+      },
+      ...focusListeners
     ];
     this.focusoutListeners = [
-      () => { GameCanvas.focusInput = false; },
-      ...focusoutListeners,
+      () => {
+        GameCanvas.focusInput = false;
+      },
+      ...focusoutListeners
     ];
-    this.submitListeners = [
-      ...submitListeners
-    ];
+    this.submitListeners = [...submitListeners];
 
+    input.style.display = 'none';
     input.style.left = `${x}px`;
     input.style.top = `${y}px`;
     input.style.width = `${width}px`;

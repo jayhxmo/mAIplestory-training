@@ -1,7 +1,7 @@
 import MapleCharacter from './maplecharacter';
 
 const MyCharacter = new MapleCharacter({
-  name: 'Admin',
+	name: 'superherO'
 });
 
 MyCharacter.level = 9;

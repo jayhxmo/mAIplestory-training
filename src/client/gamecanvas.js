@@ -86,7 +86,7 @@ GameCanvas.initialize = function() {
     left: 37,
     down: 40,
     right: 39,
-    num0: 96,
+    num0: 96
   };
   this.pressedKeys = {};
 
@@ -121,20 +121,24 @@ GameCanvas.moveControlPanel = function(x, y) {
   this.controlPanel.style.top = `${parseInt(y)}px`;
 };
 
-GameCanvas.moveGame = function(x=0, y=0) {
+GameCanvas.moveGame = function(x = 0, y = 0) {
   const X = parseInt(x) || 0;
   const Y = parseInt(y) || 0;
-  const newX = X + ((this.scaleX - 1) * 400);
-  const newY = Y + ((this.scaleY - 1) * 300);
+  const newX = X + (this.scaleX - 1) * 400;
+  const newY = Y + (this.scaleY - 1) * 300;
   this.gameWrapper.style.left = `${newX}px`;
   this.gameWrapper.style.top = `${newY}px`;
 };
 
-GameCanvas.scaleGame = function(width=800, height=600) {
+GameCanvas.scaleGame = function(width = 800, height = 600) {
   let Width = parseInt(width);
   let Height = parseInt(height);
-  if (isNaN(Width) || Width < 800) { Width = 800; }
-  if (isNaN(Height) || Height < 600) { Height = 600; }
+  if (isNaN(Width) || Width < 800) {
+    Width = 800;
+  }
+  if (isNaN(Height) || Height < 600) {
+    Height = 600;
+  }
   this.scaleX = Width / 800;
   this.scaleY = Height / 600;
   this.gameWrapper.style.transform = `scale(${this.scaleX}, ${this.scaleY})`;
@@ -142,16 +146,22 @@ GameCanvas.scaleGame = function(width=800, height=600) {
 };
 
 GameCanvas.listenControlPanel = function() {
-  const inputW = this.inputW
-  const inputH = this.inputH
-  const inputX = this.inputX
-  const inputY = this.inputY
-  const detectESC = e => { e.keyCode === 27 && this.hideControlPanel(); };
-  const scaleGame = () => { this.scaleGame(inputW.value, inputH.value); };
-  const moveGame = () => { this.moveGame(inputX.value, inputY.value); };
+  const inputW = this.inputW;
+  const inputH = this.inputH;
+  const inputX = this.inputX;
+  const inputY = this.inputY;
+  const detectESC = e => {
+    e.keyCode === 27 && this.hideControlPanel();
+  };
+  const scaleGame = () => {
+    this.scaleGame(inputW.value, inputH.value);
+  };
+  const moveGame = () => {
+    this.moveGame(inputX.value, inputY.value);
+  };
 
   inputW.oninput = scaleGame;
-  inputH.oninput = scaleGame
+  inputH.oninput = scaleGame;
   inputX.oninput = moveGame;
   inputY.oninput = moveGame;
   inputW.onkeypress = detectESC;
@@ -164,15 +174,23 @@ GameCanvas.listenControlPanel = function() {
 GameCanvas.enableControlPanelDragging = function() {
   let x;
   let y;
-  const move = e => this.moveControlPanel(e.clientX-x, e.clientY-y);
-  this.controlPanelBar.addEventListener('mousedown', e => {
-    x = e.clientX - parseInt(this.controlPanel.offsetLeft);
-    y = e.clientY - parseInt(this.controlPanel.offsetTop);
-    window.addEventListener('mousemove', move, true);
-  }, false);
-  this.controlPanelBar.addEventListener('mouseup', () => {
-    window.removeEventListener('mousemove', move, true);
-  }, false);
+  const move = e => this.moveControlPanel(e.clientX - x, e.clientY - y);
+  this.controlPanelBar.addEventListener(
+    'mousedown',
+    e => {
+      x = e.clientX - parseInt(this.controlPanel.offsetLeft);
+      y = e.clientY - parseInt(this.controlPanel.offsetTop);
+      window.addEventListener('mousemove', move, true);
+    },
+    false
+  );
+  this.controlPanelBar.addEventListener(
+    'mouseup',
+    () => {
+      window.removeEventListener('mousemove', move, true);
+    },
+    false
+  );
 };
 
 GameCanvas.showControlPanelOnClick = function() {
@@ -182,8 +200,8 @@ GameCanvas.showControlPanelOnClick = function() {
 GameCanvas.listenMouse = function() {
   this.gameWrapper.addEventListener('mousemove', e => {
     const rectangle = this.gameWrapper.getBoundingClientRect();
-    this.mouseX = (e.clientX-rectangle.left) / this.scaleX;
-    this.mouseY = (e.clientY-rectangle.top) / this.scaleY;
+    this.mouseX = (e.clientX - rectangle.left) / this.scaleX;
+    this.mouseY = (e.clientY - rectangle.top) / this.scaleY;
   });
   this.gameWrapper.addEventListener('mousedown', e => {
     if (e.which === 1) {
@@ -203,8 +221,7 @@ GameCanvas.listenMouse = function() {
     e.preventDefault();
   });
   this.gameWrapper.addEventListener('mouseout', e => {
-    const stillHoveringGameWrapper = !!e.relatedTarget &&
-      e.relatedTarget.parentNode === this.gameWrapper;
+    const stillHoveringGameWrapper = !!e.relatedTarget && e.relatedTarget.parentNode === this.gameWrapper;
     if (!stillHoveringGameWrapper) {
       this.clicked = false;
       this.rightClicked = false;
@@ -213,11 +230,13 @@ GameCanvas.listenMouse = function() {
   window.addEventListener('mousedown', e => {
     this.focusGame = e.target === this.game;
   });
-  this.gameWrapper.addEventListener('DOMMouseScroll', e => { // firefox
+  this.gameWrapper.addEventListener('DOMMouseScroll', e => {
+    // firefox
     this.scrolledUp = e.detail < 0;
     this.scrolledDown = e.detail > 0;
   });
-  this.gameWrapper.addEventListener('mousewheel', e => { // chrome
+  this.gameWrapper.addEventListener('mousewheel', e => {
+    // chrome
     this.scrolledUp = e.wheelDelta > 0;
     this.scrolledDown = e.wheelDelta < 0;
   });
@@ -225,16 +244,16 @@ GameCanvas.listenMouse = function() {
 
 GameCanvas.listenKeyboard = function() {
   window.onkeydown = e => {
-    if (this.focusGame && !this.focusInput) {
-      e.preventDefault();
-      this.pressedKeys[e.keyCode] = true;
-    }
+    // if (this.focusGame && !this.focusInput) {
+    e.preventDefault();
+    this.pressedKeys[e.keyCode] = true;
+    // }
   };
   window.onkeyup = e => {
-    if (this.focusGame && !this.focusInput) {
-      e.preventDefault();
-      this.pressedKeys[e.keyCode] = false;
-    }
+    // if (this.focusGame && !this.focusInput) {
+    e.preventDefault();
+    this.pressedKeys[e.keyCode] = false;
+    // }
   };
 };
 

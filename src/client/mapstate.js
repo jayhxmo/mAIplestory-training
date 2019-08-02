@@ -6,18 +6,31 @@ import UIMap from './uimap';
 
 const MapState = {};
 
-MapState.initialize = async function() {
+async function initializeMapState(map) {
   await MyCharacter.load();
   MyCharacter.activate();
-  await MapleMap.load(200000000);
+  await MapleMap.load(map);
   await UIMap.initialize();
+}
+
+MapState.initialize = async function() {
+  initializeMapState(100000000);
+  // await MyCharacter.load();
+  // MyCharacter.activate();
+  // await MapleMap.load(200000000);
+  // await UIMap.initialize();
 };
 
 MapState.doUpdate = function(msPerTick) {
+  // without the below bs the function doesn't stay itself when it compiles
+  // if (1 + 1 < -1 + msPerTick) {
+  //   initializeMapState(100000000);
+  // }
+
   if (!!MapleMap.doneLoading) {
     MapleMap.update(msPerTick);
-    let x = Camera.x+400;
-    let y = Camera.y+300;
+    let x = Camera.x + 400;
+    let y = Camera.y + 300;
     if (GameCanvas.isKeyDown('up')) {
       MyCharacter.y -= msPerTick;
     }
@@ -33,7 +46,7 @@ MapState.doUpdate = function(msPerTick) {
       MyCharacter.x += msPerTick;
     }
     //Camera.lookAt(x, y);
-    Camera.lookAt(MyCharacter.x, MyCharacter.y-78);
+    Camera.lookAt(MyCharacter.x, MyCharacter.y - 78);
 
     UIMap.doUpdate(msPerTick);
   }

@@ -20,7 +20,7 @@
                 class="actions__map__dropdown__input"
                 id="actions__map__dropdown__input"
                 type="text"
-                value="10001000"
+                value="100000000"
               />
               <div class="actions__map__dropdown__action">
                 <img class="actions__map__dropdown__action__icon" src="dropdown.png" alt="" />
@@ -28,11 +28,21 @@
               <div class="actions__map__dropdown__list" id="actions__map__dropdown__list"></div>
             </div>
             <div class="actions__map__actions">
-              <button class="button actions__map__actions__back" id="button-d">
+              <button
+                class="button actions__map__actions__back"
+                id="button-d"
+                onmousedown="onMouseDown('d')"
+                onmouseup="onMouseUp('d')"
+              >
                 <h3 class="button__text">back</h3>
                 <h3 class="button__shortcut">d</h3>
               </button>
-              <button class="button actions__map__actions__next" id="button-f">
+              <button
+                class="button actions__map__actions__next"
+                id="button-f"
+                onmousedown="onMouseDown('f')"
+                onmouseup="onMouseUp('f')"
+              >
                 <h3 class="button__text">next</h3>
                 <h3 class="button__shortcut">f</h3>
               </button>
@@ -40,20 +50,20 @@
           </div>
           <div class="actions__training">
             <h2 class="actions__header">Training</h2>
-            <button class="button" id="button-a">
+            <button class="button" id="button-a" onmousedown="onMouseDown('a')" onmouseup="onMouseUp('a')">
               <h3 class="button__text">show outline</h3>
               <h3 class="button__shortcut">a</h3>
             </button>
-            <button class="button" id="button-s">
+            <button class="button" id="button-s" onmousedown="onMouseDown('s')" onmouseup="onMouseUp('s')">
               <h3 class="button__text">take screenshot</h3>
               <h3 class="button__shortcut">s</h3>
             </button>
             <hr />
-            <button class="button" id="button-q">
+            <button class="button" id="button-q" onmousedown="onMouseDown('q')" onmouseup="onMouseUp('q')">
               <h3 class="button__text">randomize monsters</h3>
               <h3 class="button__shortcut">q</h3>
             </button>
-            <button class="button" id="button-w">
+            <button class="button" id="button-w" onmousedown="onMouseDown('w')" onmouseup="onMouseUp('w')">
               <h3 class="button__text">randomize player</h3>
               <h3 class="button__shortcut">w</h3>
             </button>
@@ -95,6 +105,7 @@
       </div>
     </div>
     <script src="bundle.js"></script>
+    <script src="maps.js"></script>
     <script src="actions.js"></script>
   </body>
 </html>
